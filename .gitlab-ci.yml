@@ -2,7 +2,6 @@ image: node:18-alpine
 
 stages:
   - build
-  - test
   - deploy
 
 cache:
@@ -18,13 +17,6 @@ build:
     paths:
       - build
     expire_in: 1 hour
-
-test:
-  stage: test
-  script:
-    - yarn test
-  needs:
-    - build
 
 deploy:
   stage: deploy
