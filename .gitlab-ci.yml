@@ -1,0 +1,45 @@
+image: node:18-alpine
+
+stages:
+  - build
+  - test
+  - deploy
+
+cache:
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  script:
+    - yarn install
+    - yarn build
+  artifacts:
+    paths:
+      - build
+    expire_in: 1 hour
+
+test:
+  stage: test
+  script:
+    - yarn test
+  needs:
+    - build
+
+deploy:
+  stage: deploy
+  environment:
+    name: production
+    url: https://nicetry.franciswibisono.com
+  script:
+    - apk add --no-cache openssh-client rsync
+    - echo "$SSH_PRIVATE_KEY" | base64 -d > ssh_key
+    - chmod 600 ssh_key
+    - tar czvf deployment_files.tar.gz build Dockerfile package.json yarn.lock
+    - ssh -i ssh_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null francis@nicetry.franciswibisono.com "mkdir -p /tmp/deployments/svelte"
+    - rsync -avz -e "ssh -i ssh_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" deployment_files.tar.gz francis@nicetry.franciswibisono.com:/tmp/deployments/svelte/
+    - ssh -i ssh_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null francis@nicetry.franciswibisono.com "docker stop \$(docker ps -q --filter 'ancestor=nicetry/svelte') || true && docker rm \$(docker ps -a -q --filter 'ancestor=nicetry/svelte') || true && cd /tmp/deployments/svelte && tar xvf deployment_files.tar.gz && docker build -t nicetry/svelte . && docker run -d --restart=unless-stopped -p 8787:5000 nicetry/svelte"
+  when:
+    always
+  only:
+    - revamp
