@@ -26,3 +26,21 @@ export const createOrder = async (serviceId: string, token: string): Promise<Ord
 	const data = await response.json();
 	return data;
 };
+
+export const getOrderByCustomer = async (customerId: string, token: string): Promise<Order[]> => {
+	const response = await fetch(
+		`https://nicetry.franciswibisono.com/order/orders/customer-id?customerId=${customerId}`,
+		{
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+	);
+
+	if (!response.ok) {
+		throw new Error(`HTTP error! status: ${response.status}`);
+	}
+
+	const data = await response.json();
+	return data;
+}

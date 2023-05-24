@@ -10,6 +10,7 @@
 	const logout = () => {
 		userData.delete();
 		userToken.delete();
+		window.location.reload();
 	};
 
 	let previousToastStatus = false;
@@ -18,22 +19,22 @@
 		setTimeout(() => {
 			toastEnable.set(false);
 		}, 5000);
-	}
+	};
 
 	onMount(async () => {
 		const ignoredPaths = ['/login', '/register'];
 
 		let path = get(page).url.pathname;
+
 		if (!ignoredPaths.includes(path)) {
-			console.log('ini', get(userData));
 			console.info('checking login information');
 			let token = get(userToken);
+
 			if (!token) {
 				console.info('no token found, redirecting to login');
 				goto('/login');
 			} else {
 				try {
-					if (!get(userToken)) throw new Error('no token found, redirecting to login');
 					let userDataResponse = await verifyJWT(token);
 					userData.set(userDataResponse);
 				} catch {
@@ -42,8 +43,6 @@
 					goto('/login');
 				}
 			}
-		} else {
-			logout();
 		}
 
 		const unsubscribe = toastEnable.subscribe((value) => {
@@ -90,23 +89,26 @@
 		</div>
 	</div>
 	{#if $toastEnable}
-	<div class="alert alert-success shadow-lg sticky top-0 z-[500] w-[80%] mx-auto">
-		<div>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="stroke-current flex-shrink-0 h-6 w-6"
-				fill="none"
-				viewBox="0 0 24 24"
-				><path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-				/></svg
-			>
-			<span>Your purchase has been confirmed!</span>
+		<div class="alert alert-success shadow-lg sticky top-0 z-[500] w-[80%] mx-auto">
+			<div>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="stroke-current flex-shrink-0 h-6 w-6"
+					fill="none"
+					viewBox="0 0 24 24"
+					><path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+					/></svg
+				>
+				<span>Your purchase has been confirmed!</span>
+			</div>
 		</div>
-	</div>
 	{/if}
-	<slot />
+	<div class="mx-8">
+		<slot />
+	</div>
+	
 </div>

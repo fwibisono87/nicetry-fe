@@ -36,6 +36,9 @@
 				userData.set(userDataResponse);
 
 				msg = `Login successful! Welcome ${get(userData).firstName}!`;
+				setTimeout(() => {
+					goto('/');
+				}, 1000);
 			}
 		} catch (e) {
 			if (e instanceof Error) {

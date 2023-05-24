@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "sources": ["../../home/francis/code/adprog/tk/nicetry-fe/src/functions/hello.ts", "../../home/francis/code/adprog/tk/nicetry-fe/src/functions/impl/hello.ts"],
+  "sourceRoot": "/tmp/tmp-14607-9bdwdJNYUNf4",
+  "sourcesContent": ["import type { Handler, HandlerEvent } from '@netlify/functions';\nimport { hello } from './impl/hello';\n\nexport const handler: Handler = async (event: HandlerEvent) => {\n\tconst input = event.queryStringParameters?.input || 'World';\n\tconst result = hello(input);\n\treturn {\n\t\tstatusCode: 200,\n\t\tbody: JSON.stringify({ message: result })\n\t};\n};\n", "// src/functions/logic.js\nexport const hello = (input: string) => {\n\t// Your function logic here\n\treturn `Hello, ${input}!`;\n};\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;;;ACCO,IAAM,QAAQ,CAAC,UAAkB;AAEvC,SAAO,UAAU;AAClB;;;ADDO,IAAM,UAAmB,OAAO,UAAwB;AAH/D;AAIC,QAAM,QAAQ,aAAM,0BAAN,mBAA6B,UAAS;AACpD,QAAM,SAAS,MAAM,KAAK;AAC1B,SAAO;AAAA,IACN,YAAY;AAAA,IACZ,MAAM,KAAK,UAAU,EAAE,SAAS,OAAO,CAAC;AAAA,EACzC;AACD;",
+  "names": []
+}

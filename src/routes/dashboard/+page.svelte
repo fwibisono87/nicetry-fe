@@ -32,8 +32,6 @@
 			myServices = await getServicesByHelper(userID);
 			myOrders = await getOrdersByHelper(userID);
 		}
-		console.log(myServices);
-		console.log(myOrders);
 		isLoading = false;
 	});
 </script>
