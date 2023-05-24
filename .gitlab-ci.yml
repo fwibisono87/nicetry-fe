@@ -27,7 +27,7 @@ deploy:
     - apk add --no-cache openssh-client rsync
     - echo "$SSH_PRIVATE_KEY" | base64 -d > ssh_key
     - chmod 600 ssh_key
-    - tar czvf deployment_files.tar.gz build Dockerfile package.json yarn.lock
+    - tar czvf deployment_files.tar.gz build Dockerfile package.json package-lock.json yarn.lock
     - ssh -i ssh_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null francis@nicetry.franciswibisono.com "mkdir -p /tmp/deployments/svelte"
     - rsync -avz -e "ssh -i ssh_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" deployment_files.tar.gz francis@nicetry.franciswibisono.com:/tmp/deployments/svelte/
     - ssh -i ssh_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null francis@nicetry.franciswibisono.com "docker stop \$(docker ps -q --filter 'ancestor=nicetry/svelte') || true && docker rm \$(docker ps -a -q --filter 'ancestor=nicetry/svelte') || true && cd /tmp/deployments/svelte && tar xvf deployment_files.tar.gz && docker build -t nicetry/svelte . && docker run -d --restart=unless-stopped -p 8787:5000 nicetry/svelte"
